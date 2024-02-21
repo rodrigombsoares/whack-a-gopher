@@ -78,9 +78,9 @@ impl Hole {
         // Kill gopher if key is pressed
         self.is_pressed = is_key_down(key_map[&self.index]);
         if self.is_pressed && self.gopher.is_some() {
-            self.gopher=None;
             *gophers_count -= 1;
-            *points += HIT_SCORE;
+            *points += HIT_SCORE - (100.0*self.gopher.as_ref().unwrap().time_elapsed/3.0) as i32;
+            self.gopher=None;
         }
     }
 
