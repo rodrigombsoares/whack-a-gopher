@@ -5,11 +5,10 @@ use macroquad::prelude::*;
 
 const MARGING: f32 = 100f32;
 
-#[macroquad::main("BasicShapes")]
+#[macroquad::main("WHACK-A-GOPHER")]
 async fn main() {
     let gopher_texture: Texture2D = load_texture("assets/gopher.png").await.unwrap();
     let land_texture: Texture2D = load_texture("assets/grass.png").await.unwrap();
-    let hole_texture: Texture2D = load_texture("assets/hole.png").await.unwrap();
 
     // TODO: this could go to a game control struct
     let mut holes: Vec<Hole> = Vec::new();
@@ -18,7 +17,7 @@ async fn main() {
     let mut points = 0;
 
     for i in 0..6 {
-        let hole = Hole::new(i as f32, gopher_texture.clone(), hole_texture.clone());
+        let hole = Hole::new(i as f32, gopher_texture.clone());
         holes.push(hole);
     }
 
