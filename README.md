@@ -2,6 +2,6 @@
 A recreation of the classic whack-a-mole using Rust with macroquad framework   
 ## TODO
 - [X] Implement points
-- [ ] Separate entities
+- [X] Separate entities
 - [ ] Game states (menu/game/end)
 - [ ] Add assets

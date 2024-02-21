@@ -14,10 +14,11 @@ pub struct Hole {
     gopher: Option<Gopher>,
     is_pressed: bool,
     index: i32,
+    gopher_texture: Texture2D,
 }
 
 impl Hole {
-    pub fn new(i: f32) -> Self {
+    pub fn new(i: f32, gopher_texture: Texture2D) -> Self {
         let x = screen_width()*0.5 - 4.0*RADIUS - 20.0 + MARGING+((i-i%2.0)*(RADIUS+10.0));
         let y = screen_height()*0.5 - RADIUS - 10.0 +(RADIUS+10.0)*2.0*(i%2.0);
 
@@ -26,6 +27,7 @@ impl Hole {
             gopher: None,
             is_pressed: false,
             index: i as i32,
+            gopher_texture: gopher_texture,
         }
     }
 
@@ -73,7 +75,10 @@ impl Hole {
     pub fn draw(&self) {
         draw_circle(self.circle.x, self.circle.y, RADIUS, BROWN);
         if self.gopher.is_some() {
-            draw_circle(self.circle.x, self.circle.y, 20.0, BLUE);
+            draw_texture_ex(&self.gopher_texture, self.circle.x-1.5*32.3/2.0, self.circle.y-1.5*17.9/2.0, WHITE, DrawTextureParams {
+                dest_size: Some(vec2(1.5*32.3, 1.5*17.9)),
+                ..Default::default()
+            });
         }
         if self.is_pressed {
             draw_circle(self.circle.x, self.circle.y, 20.0, RED);
