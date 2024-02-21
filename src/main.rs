@@ -62,6 +62,16 @@ impl Hole {
                 self.gopher = Some(Gopher::new());
             }
         }
+        
+        // Count gopher time in the hole, delete if too long
+        if let Some(gopher) = self.gopher.as_mut()  {
+            gopher.time_elapsed += dt;
+            if gopher.time_elapsed > gopher.max_time {
+                self.gopher=None;
+                *gophers_count -= 1;
+            }
+        };
+
         self.is_pressed = is_key_down(key_map[&self.index]);
     }
 
