@@ -31,7 +31,7 @@ impl Hole {
         }
     }
 
-    pub fn update(&mut self, dt: f32, gophers_count: &mut i32, last_gopher_spawned: &mut f64, points: &mut i32) {
+    pub fn update(&mut self, dt: f32, gophers_count: &mut i32, last_gopher_spawned: &mut f64, points: &mut i32, gophers_spawned: &mut i8, game_state: &mut super::super::GameState) {
         let key_map = HashMap::from([
             (0, KeyCode::Q),
             (1, KeyCode::A),
@@ -40,7 +40,9 @@ impl Hole {
             (4, KeyCode::E),
             (5, KeyCode::D),
         ]);
-    
+        if *gophers_spawned >= 10 {
+            *game_state = super::super::GameState::End;
+        }
         // Spawn gophers
         let time_since_last_gopher = get_time() - *last_gopher_spawned;
         if self.gopher.is_none() && *gophers_count < 3 && time_since_last_gopher > 0.5{
@@ -49,6 +51,7 @@ impl Hole {
             let random: f32 = thread_rng().gen();
             if random > 0.5 {
                 *gophers_count += 1;
+                *gophers_spawned += 1;
                 *last_gopher_spawned = get_time();
                 self.gopher = Some(Gopher::new());
             }
