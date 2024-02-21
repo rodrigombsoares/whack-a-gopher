@@ -31,7 +31,7 @@ impl Hole {
         }
     }
 
-    pub fn update(&mut self, dt: f32, gophers_count: &mut i32, last_gopher_spawned: &mut f64, points: &mut i32, gophers_spawned: &mut i8, game_state: &mut super::super::GameState) {
+    pub fn update(&mut self, dt: f32, c: &mut super::super::Control) {
         let key_map = HashMap::from([
             (0, KeyCode::Q),
             (1, KeyCode::A),
@@ -40,19 +40,20 @@ impl Hole {
             (4, KeyCode::E),
             (5, KeyCode::D),
         ]);
-        if *gophers_spawned >= 10 {
-            *game_state = super::super::GameState::End;
-        }
         // Spawn gophers
-        let time_since_last_gopher = get_time() - *last_gopher_spawned;
-        if self.gopher.is_none() && *gophers_count < 3 && time_since_last_gopher > 0.5{
+        let time_since_last_gopher = get_time() - c.last_gopher_spawned;
+        if self.gopher.is_none() && c.gophers_count < 3 && time_since_last_gopher > 0.5{
+            // End game if 10 gophers already spawned
+            if c.gophers_spawned >= 10 {
+                c.game_state = super::super::GameState::End;
+            }
             // If the hole is empty and last gopher spawned within more than 0.5s 
             // add a gopher with 50% probability
             let random: f32 = thread_rng().gen();
             if random > 0.5 {
-                *gophers_count += 1;
-                *gophers_spawned += 1;
-                *last_gopher_spawned = get_time();
+                c.gophers_count += 1;
+                c.gophers_spawned += 1;
+                c.last_gopher_spawned = get_time();
                 self.gopher = Some(Gopher::new());
             }
         }
@@ -62,15 +63,15 @@ impl Hole {
             gopher.time_elapsed += dt;
             if gopher.time_elapsed > gopher.max_time {
                 self.gopher=None;
-                *gophers_count -= 1;
+                c.gophers_count -= 1;
             }
         };
 
         // Kill gopher if key is pressed
         self.is_pressed = is_key_down(key_map[&self.index]);
         if self.is_pressed && self.gopher.is_some() {
-            *gophers_count -= 1;
-            *points += HIT_SCORE - (100.0*self.gopher.as_ref().unwrap().time_elapsed/3.0) as i32;
+            c.gophers_count -= 1;
+            c.points += HIT_SCORE - (100.0*self.gopher.as_ref().unwrap().time_elapsed/3.0) as i32;
             self.gopher=None;
         }
     }
