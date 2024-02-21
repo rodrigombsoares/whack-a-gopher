@@ -31,20 +31,24 @@ impl Default for Control {
     }
 }
 
+fn get_holes(gopher_texture: Texture2D) -> Vec<Hole> {
+    let mut holes: Vec<Hole> = Vec::new();
+    for i in 0..6 {
+        let hole = Hole::new(i as f32, gopher_texture.clone());
+        holes.push(hole);
+    }
+    holes
+}
+
 #[macroquad::main("WHACK-A-GOPHER")]
 async fn main() {
     let gopher_texture: Texture2D = load_texture("assets/gopher.png").await.unwrap();
     let land_texture: Texture2D = load_texture("assets/grass.png").await.unwrap();
     
-    let mut holes: Vec<Hole> = Vec::new();
+    let mut holes = get_holes(gopher_texture.clone());
     let mut control: Control = Control {
         ..Default::default()
     };
-
-    for i in 0..6 {
-        let hole = Hole::new(i as f32, gopher_texture.clone());
-        holes.push(hole);
-    }
 
     loop {
         let score_text: String = format!("Score: {}", control.points);
@@ -82,6 +86,7 @@ async fn main() {
             GameState::End => {
                 utils::draw_title_text("Press SPACE to restart");
                 if is_key_pressed(KeyCode::Space) {
+                    holes = get_holes(gopher_texture.clone());
                     control = Control {
                         game_state: GameState::Game,
                         ..Default::default()
